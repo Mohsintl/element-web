@@ -68,6 +68,12 @@ export interface Api extends DialogApiExtension, AccountAuthApiExtension, Profil
 }
 
 // @alpha
+export interface BaseSettings<T extends SettingValueType = SettingValueType> {
+    default: T;
+    supportedLevels: Level[];
+}
+
+// @alpha
 export interface BuiltinsApi {
     renderNotificationDecoration(roomId: string): React.ReactNode;
     renderRoomAvatar(roomId: string, size?: string): React.ReactNode;
@@ -334,6 +340,12 @@ export interface LanguageTranslations {
 }
 
 // @alpha
+export enum Level {
+    // (undocumented)
+    DEVICE = "device"
+}
+
+// @alpha
 export type LocationRenderFunction = () => JSX.Element;
 
 // @alpha
@@ -463,9 +475,20 @@ export interface RoomViewProps {
 }
 
 // @alpha
-export interface SettingsApi {
-    getValue<T = any>(settingName: string, roomId?: string | null, excludeDefault?: boolean): T | undefined;
+export interface Settings {
+    // (undocumented)
+    [settingsName: `module.${string}`]: BaseSettings;
 }
+
+// @alpha
+export interface SettingsApi<T extends Settings = Settings> {
+    getValue<K extends keyof T | string>(settingName: K, roomId?: string | null, excludeDefault?: boolean): Watchable<K extends keyof T ? T[K] : unknown>;
+    registerSettings(settings: T): void;
+    setValue<K extends keyof T | string>(settingName: K, roomId: string | null, level: Level, value: K extends keyof T ? T[K] : unknown): Promise<void>;
+}
+
+// @alpha
+export type SettingValueType = null | string | number | boolean;
 
 // @alpha
 export interface SpacePanelItemProps {
