@@ -401,6 +401,7 @@ export type PreloadApprover = (widget: WidgetDescriptor) => MaybePromise<boolean
 export interface Profile {
     deviceId?: string;
     displayName?: string;
+    homeserverUrl?: string;
     isGuest?: boolean;
     userId?: string;
 }
@@ -421,6 +422,8 @@ export interface RichVariables {
 // @public
 export interface Room {
     getLastActiveTimestamp: () => number;
+    // @alpha
+    getStateEvents(eventType: string): Watchable<RoomStateEvent[]>;
     id: string;
     isEncrypted: Watchable<boolean | undefined>;
     name: Watchable<string>;
@@ -433,6 +436,12 @@ export type RoomHeaderButtonsCallback = (roomId: string) => JSX.Element | undefi
 export interface RoomListStoreApi {
     getRooms(): Watchable<Room[]>;
     waitForReady(): Promise<void>;
+}
+
+// @alpha
+export interface RoomStateEvent {
+    content: Record<string, unknown>;
+    stateKey: string;
 }
 
 // @alpha
@@ -498,6 +507,7 @@ export const enum UIComponent {
     FilterContainer = "UIComponent.filterContainer",
     InviteUsers = "UIComponent.sendInvites",
     PublicRooms = "UIComponent.publicRooms",
+    ReleaseAnnouncements = "UIComponent.releaseAnnouncements",
     RoomOptionsMenu = "UIComponent.roomOptionsMenu"
 }
 
